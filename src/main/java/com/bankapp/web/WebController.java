@@ -100,6 +100,11 @@ public class WebController {
         return "redirect:/login";
     }
 
+    @PostMapping("/logout")
+    public String logoutPost(HttpSession session, RedirectAttributes redirectAttributes) {
+        return logout(session, redirectAttributes);
+    }
+
     @GetMapping("/dashboard")
     public String dashboard(@RequestParam(required = false) Integer accountsClientId,
                             @RequestParam(required = false) Integer loansClientId,

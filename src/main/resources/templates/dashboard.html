@@ -25,7 +25,9 @@
             <span class="role-chip client" th:if="${isClient}">Client</span>
             <span class="role-chip operator" th:if="${isOperator}">Operator</span>
             <span class="role-chip manager" th:if="${isManager}">Manager</span>
-            <a class="button secondary" href="/logout">Logout</a>
+            <form method="post" action="/logout" class="logout-form">
+                <button type="submit" class="secondary">Logout</button>
+            </form>
         </div>
     </header>
 
@@ -375,7 +377,7 @@
         </div>
     </section>
 
-    <p class="page-foot">Premier Ledger Bank ? Built for practical daily operations</p>
+    <p class="page-foot">Premier Ledger Bank - Built for practical daily operations</p>
 </main>
 </body>
 </html>
