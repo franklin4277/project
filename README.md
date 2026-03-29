@@ -1,4 +1,4 @@
-﻿# Bank Application System Website (Java + Spring Boot + JDBC + SQLite)
+# Bank Application System Website (Java + Spring Boot + JDBC + SQLite)
 
 A simple website for a banking application using a local database (`bank.db`) with:
 - Account opening (`SAVINGS`, `FIXED_DEPOSIT`, `CURRENT`)
