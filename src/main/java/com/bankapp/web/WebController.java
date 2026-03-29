@@ -49,6 +49,14 @@ public class WebController {
         return "login";
     }
 
+    @GetMapping("/signup")
+    public String signupPage(HttpSession session) {
+        if (getSessionUser(session) != null) {
+            return "redirect:/dashboard";
+        }
+        return "signup";
+    }
+
     @PostMapping("/login")
     public String login(@RequestParam String username,
                         @RequestParam String password,
@@ -62,6 +70,26 @@ public class WebController {
         } catch (BankException e) {
             redirectAttributes.addFlashAttribute("error", e.getMessage());
             return "redirect:/login";
+        }
+    }
+
+    @PostMapping("/signup")
+    public String signup(@RequestParam String fullName,
+                         @RequestParam String username,
+                         @RequestParam String password,
+                         @RequestParam String confirmPassword,
+                         HttpSession session,
+                         RedirectAttributes redirectAttributes) {
+        try {
+            User user = authService.registerClient(fullName, username, password, confirmPassword);
+            session.setAttribute(SESSION_USER, user);
+            redirectAttributes.addFlashAttribute("success", "Account created successfully. Welcome.");
+            return "redirect:/dashboard";
+        } catch (BankException e) {
+            redirectAttributes.addFlashAttribute("error", e.getMessage());
+            redirectAttributes.addFlashAttribute("signupFullName", fullName);
+            redirectAttributes.addFlashAttribute("signupUsername", username);
+            return "redirect:/signup";
         }
     }
 

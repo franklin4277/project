@@ -28,4 +28,48 @@ public class AuthService {
             throw new BankException("Could not authenticate user: " + e.getMessage());
         }
     }
+
+    public User registerClient(String fullName, String username, String password, String confirmPassword)
+        throws BankException {
+        if (fullName == null || fullName.isBlank()) {
+            throw new BankException("Full name is required.");
+        }
+        if (username == null || username.isBlank()) {
+            throw new BankException("Username is required.");
+        }
+        if (password == null || password.isBlank()) {
+            throw new BankException("Password is required.");
+        }
+        if (confirmPassword == null || confirmPassword.isBlank()) {
+            throw new BankException("Password confirmation is required.");
+        }
+
+        String trimmedName = fullName.trim();
+        String trimmedUsername = username.trim();
+
+        if (trimmedName.length() < 3) {
+            throw new BankException("Full name must have at least 3 characters.");
+        }
+        if (!trimmedUsername.matches("[A-Za-z0-9._-]{3,30}")) {
+            throw new BankException("Username must be 3-30 chars and contain only letters, numbers, ., _, -");
+        }
+        if (password.length() < 6) {
+            throw new BankException("Password must have at least 6 characters.");
+        }
+        if (!password.equals(confirmPassword)) {
+            throw new BankException("Passwords do not match.");
+        }
+
+        try {
+            if (userDao.usernameExists(trimmedUsername)) {
+                throw new BankException("Username is already taken.");
+            }
+            return userDao.createClientUser(trimmedUsername, password, trimmedName);
+        } catch (SQLException e) {
+            if (e.getMessage() != null && e.getMessage().contains("UNIQUE constraint failed: users.username")) {
+                throw new BankException("Username is already taken.");
+            }
+            throw new BankException("Could not create account: " + e.getMessage());
+        }
+    }
 }

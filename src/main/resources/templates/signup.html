@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Client Signup</title>
+    <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+<main class="page">
+    <section class="login-shell motion-in">
+        <article class="login-brand">
+            <h1>Open Your Client Profile</h1>
+            <p>Create your own client login and access banking services online.</p>
+
+            <ul class="rule-list">
+                <li>Signup creates a CLIENT account only.</li>
+                <li>Username: 3-30 characters (`A-Z`, `a-z`, `0-9`, `.`, `_`, `-`).</li>
+                <li>Password minimum length: 6 characters.</li>
+            </ul>
+        </article>
+
+        <article class="card login-panel">
+            <h2 class="login-title">Sign Up</h2>
+            <p class="login-sub">Fill in your details to create a new client account.</p>
+
+            <div class="alert ok" th:if="${success}" th:text="${success}"></div>
+            <div class="alert err" th:if="${error}" th:text="${error}"></div>
+
+            <form class="form-grid" method="post" action="/signup">
+                <label for="fullName">Full Name</label>
+                <input id="fullName" name="fullName" required autocomplete="name" th:value="${signupFullName}">
+
+                <label for="username">Username</label>
+                <input id="username" name="username" required autocomplete="username" th:value="${signupUsername}">
+
+                <label for="password">Password</label>
+                <input id="password" name="password" type="password" required autocomplete="new-password">
+
+                <label for="confirmPassword">Confirm Password</label>
+                <input id="confirmPassword" name="confirmPassword" type="password" required autocomplete="new-password">
+
+                <button type="submit">Create Account</button>
+            </form>
+
+            <div class="form-actions">
+                <a class="button secondary" href="/login">Back to Login</a>
+            </div>
+        </article>
+    </section>
+</main>
+</body>
+</html>
