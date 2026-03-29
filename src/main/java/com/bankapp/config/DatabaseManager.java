@@ -3,6 +3,7 @@ package com.bankapp.config;
 import com.bankapp.enums.AccountType;
 import com.bankapp.enums.Role;
 import com.bankapp.util.DateTimeUtil;
+import com.bankapp.util.PasswordUtil;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -153,30 +154,34 @@ public final class DatabaseManager {
 
         try (Connection connection = getConnection()) {
             connection.setAutoCommit(false);
+            try {
+                int aliceClientId = insertClient(connection, "Alice Njeri");
+                int bobClientId = insertClient(connection, "Bob Otieno");
 
-            int aliceClientId = insertClient(connection, "Alice Njeri");
-            int bobClientId = insertClient(connection, "Bob Otieno");
+                insertUser(connection, "alice", PasswordUtil.hashPassword("client123"), "Alice Njeri", Role.CLIENT, aliceClientId);
+                insertUser(connection, "bob", PasswordUtil.hashPassword("client123"), "Bob Otieno", Role.CLIENT, bobClientId);
+                insertUser(connection, "manager", PasswordUtil.hashPassword("manager123"), "Main Manager", Role.MANAGER, null);
+                insertUser(connection, "operator", PasswordUtil.hashPassword("operator123"), "Main Operator", Role.OPERATOR, null);
 
-            insertUser(connection, "alice", "client123", "Alice Njeri", Role.CLIENT, aliceClientId);
-            insertUser(connection, "bob", "client123", "Bob Otieno", Role.CLIENT, bobClientId);
-            insertUser(connection, "manager", "manager123", "Main Manager", Role.MANAGER, null);
-            insertUser(connection, "operator", "operator123", "Main Operator", Role.OPERATOR, null);
+                int aliceSavings = insertAccount(connection, aliceClientId, AccountType.SAVINGS,
+                    15_000.0, LocalDateTime.now().minusMonths(2), null);
+                insertAccount(connection, aliceClientId, AccountType.CURRENT,
+                    22_000.0, LocalDateTime.now().minusMonths(1), null);
 
-            int aliceSavings = insertAccount(connection, aliceClientId, AccountType.SAVINGS,
-                15_000.0, LocalDateTime.now().minusMonths(2), null);
-            insertAccount(connection, aliceClientId, AccountType.CURRENT,
-                22_000.0, LocalDateTime.now().minusMonths(1), null);
+                insertAccount(connection, bobClientId, AccountType.SAVINGS,
+                    8_500.0, LocalDateTime.now().minusMonths(3), null);
+                insertAccount(connection, bobClientId, AccountType.FIXED_DEPOSIT,
+                    50_000.0, LocalDateTime.now().minusMonths(11),
+                    LocalDate.now().plusMonths(1));
 
-            insertAccount(connection, bobClientId, AccountType.SAVINGS,
-                8_500.0, LocalDateTime.now().minusMonths(3), null);
-            insertAccount(connection, bobClientId, AccountType.FIXED_DEPOSIT,
-                50_000.0, LocalDateTime.now().minusMonths(11),
-                LocalDate.now().plusMonths(1));
+                insertTransaction(connection, aliceSavings, aliceClientId, "DEPOSIT", 15_000.0,
+                    "MPESA", "Initial seed deposit", "SEED-DEP-ALICE");
 
-            insertTransaction(connection, aliceSavings, aliceClientId, "DEPOSIT", 15_000.0,
-                "MPESA", "Initial seed deposit", "SEED-DEP-ALICE");
-
-            connection.commit();
+                connection.commit();
+            } catch (SQLException e) {
+                connection.rollback();
+                throw e;
+            }
         }
     }
 

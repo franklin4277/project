@@ -16,6 +16,7 @@
             <ul class="rule-list">
                 <li>Sign up creates a <strong>client</strong> user only.</li>
                 <li>Username must be unique and 3-30 characters.</li>
+                <li>Usernames are saved in lowercase.</li>
                 <li>Password must be at least 6 characters.</li>
             </ul>
         </article>
@@ -32,7 +33,7 @@
                 <input id="fullName" name="fullName" required autocomplete="name" th:value="${signupFullName}" placeholder="e.g. Jane Wanjiku">
 
                 <label for="username">Username</label>
-                <input id="username" name="username" required autocomplete="username" th:value="${signupUsername}" placeholder="e.g. jane.w">
+                <input id="username" name="username" required autocomplete="username" th:value="${signupUsername}" placeholder="e.g. jane.w (lowercase)">
 
                 <label for="password">Password</label>
                 <input id="password" name="password" type="password" required autocomplete="new-password" placeholder="Minimum 6 characters">

@@ -57,16 +57,22 @@ public class TransactionDao {
 
     public double sumDailyWithdrawalsByClientAndChannel(int clientId, String channel, LocalDate date)
         throws SQLException {
-        try (Connection connection = DatabaseManager.getConnection();
-             PreparedStatement statement = connection.prepareStatement(
-                 """
-                 SELECT COALESCE(SUM(amount), 0)
-                 FROM transactions
-                 WHERE client_id = ?
-                 AND type = ?
-                 AND channel = ?
-                 AND date(created_at) = date(?)
-                 """)) {
+        try (Connection connection = DatabaseManager.getConnection()) {
+            return sumDailyWithdrawalsByClientAndChannel(connection, clientId, channel, date);
+        }
+    }
+
+    public double sumDailyWithdrawalsByClientAndChannel(Connection connection, int clientId, String channel, LocalDate date)
+        throws SQLException {
+        try (PreparedStatement statement = connection.prepareStatement(
+            """
+            SELECT COALESCE(SUM(amount), 0)
+            FROM transactions
+            WHERE client_id = ?
+            AND type = ?
+            AND channel = ?
+            AND date(created_at) = date(?)
+            """)) {
             statement.setInt(1, clientId);
             statement.setString(2, TransactionType.WITHDRAWAL.name());
             statement.setString(3, channel);

@@ -3,8 +3,10 @@ package com.bankapp.service;
 import com.bankapp.dao.UserDao;
 import com.bankapp.exception.BankException;
 import com.bankapp.model.User;
+import com.bankapp.util.PasswordUtil;
 
 import java.sql.SQLException;
+import java.util.Locale;
 
 public class AuthService {
     private final UserDao userDao;
@@ -18,10 +20,17 @@ public class AuthService {
             throw new BankException("Username and password are required.");
         }
 
+        String normalizedUsername = username.trim().toLowerCase(Locale.ROOT);
+
         try {
-            User user = userDao.authenticate(username.trim(), password);
-            if (user == null) {
+            User user = userDao.findByUsername(normalizedUsername);
+            if (user == null || !PasswordUtil.verifyPassword(password, user.getPassword())) {
                 throw new BankException("Invalid credentials.");
+            }
+
+            // Seamless migration for older plain-text records.
+            if (!PasswordUtil.isHashed(user.getPassword())) {
+                userDao.updatePassword(user.getId(), PasswordUtil.hashPassword(password));
             }
             return user;
         } catch (SQLException e) {
@@ -45,7 +54,7 @@ public class AuthService {
         }
 
         String trimmedName = fullName.trim();
-        String trimmedUsername = username.trim();
+        String trimmedUsername = username.trim().toLowerCase(Locale.ROOT);
 
         if (trimmedName.length() < 3) {
             throw new BankException("Full name must have at least 3 characters.");
@@ -64,7 +73,8 @@ public class AuthService {
             if (userDao.usernameExists(trimmedUsername)) {
                 throw new BankException("Username is already taken.");
             }
-            return userDao.createClientUser(trimmedUsername, password, trimmedName);
+            String passwordHash = PasswordUtil.hashPassword(password);
+            return userDao.createClientUser(trimmedUsername, passwordHash, trimmedName);
         } catch (SQLException e) {
             if (e.getMessage() != null && e.getMessage().contains("UNIQUE constraint failed: users.username")) {
                 throw new BankException("Username is already taken.");

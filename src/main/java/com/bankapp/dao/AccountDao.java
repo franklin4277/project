@@ -73,10 +73,37 @@ public class AccountDao {
         return null;
     }
 
+    public Account findByClientAndType(Connection connection, int clientId, AccountType accountType) throws SQLException {
+        try (PreparedStatement statement = connection.prepareStatement(
+            "SELECT id, client_id, type, balance, created_at, maturity_date FROM accounts WHERE client_id = ? AND type = ?")) {
+            statement.setInt(1, clientId);
+            statement.setString(2, accountType.name());
+            try (ResultSet rs = statement.executeQuery()) {
+                if (rs.next()) {
+                    return map(rs);
+                }
+            }
+        }
+        return null;
+    }
+
     public int countByClient(int clientId) throws SQLException {
         try (Connection connection = DatabaseManager.getConnection();
              PreparedStatement statement = connection.prepareStatement(
                  "SELECT COUNT(*) FROM accounts WHERE client_id = ?")) {
+            statement.setInt(1, clientId);
+            try (ResultSet rs = statement.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt(1);
+                }
+            }
+        }
+        return 0;
+    }
+
+    public int countByClient(Connection connection, int clientId) throws SQLException {
+        try (PreparedStatement statement = connection.prepareStatement(
+            "SELECT COUNT(*) FROM accounts WHERE client_id = ?")) {
             statement.setInt(1, clientId);
             try (ResultSet rs = statement.executeQuery()) {
                 if (rs.next()) {

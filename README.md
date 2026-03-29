@@ -6,6 +6,7 @@ A simple website for a banking application using a local database (`bank.db`) wi
 - Loan application, loan approval/rejection, repayment, top-up loans
 - Account and loan statements
 - Role-based users (`CLIENT`, `OPERATOR`, `MANAGER`)
+- Secure password storage (PBKDF2 hashing with automatic migration of older demo records on login)
 
 ## Core Rules Implemented
 - Max 3 accounts per client, one per type.
@@ -19,6 +20,8 @@ A simple website for a banking application using a local database (`bank.db`) wi
 - ATM withdrawals capped at 20,000 per day.
 - MPESA withdrawals capped at 20,000 per day.
 - Common withdrawal charge applies to every withdrawal.
+- Loan decisions are explicitly validated (`approve` / `reject` only).
+- Deposit channels are validated (`MPESA`, `COUNTER`, `ONLINE`).
 
 ## Local Database
 - SQLite via JDBC
@@ -33,6 +36,10 @@ A simple website for a banking application using a local database (`bank.db`) wi
 - `bob / client123` (CLIENT)
 - `operator / operator123` (OPERATOR)
 - `manager / manager123` (MANAGER)
+
+Notes:
+- Usernames are normalized to lowercase for signup/login.
+- Existing plain-text seeded/demo passwords are auto-migrated to hashed form after successful login.
 
 ## Run Website
 1. Build:

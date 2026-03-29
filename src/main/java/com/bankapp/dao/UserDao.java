@@ -14,12 +14,11 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 public class UserDao {
-    public User authenticate(String username, String password) throws SQLException {
+    public User findByUsername(String username) throws SQLException {
         try (Connection connection = DatabaseManager.getConnection();
              PreparedStatement statement = connection.prepareStatement(
-                 "SELECT id, username, password, full_name, role, client_id FROM users WHERE username = ? AND password = ?")) {
+                 "SELECT id, username, password, full_name, role, client_id FROM users WHERE LOWER(username) = LOWER(?)")) {
             statement.setString(1, username);
-            statement.setString(2, password);
             try (ResultSet rs = statement.executeQuery()) {
                 if (rs.next()) {
                     return map(rs);
@@ -46,7 +45,7 @@ public class UserDao {
     public boolean usernameExists(String username) throws SQLException {
         try (Connection connection = DatabaseManager.getConnection();
              PreparedStatement statement = connection.prepareStatement(
-                 "SELECT 1 FROM users WHERE username = ? LIMIT 1")) {
+                 "SELECT 1 FROM users WHERE LOWER(username) = LOWER(?) LIMIT 1")) {
             statement.setString(1, username);
             try (ResultSet rs = statement.executeQuery()) {
                 return rs.next();
@@ -98,6 +97,16 @@ public class UserDao {
             } finally {
                 connection.setAutoCommit(true);
             }
+        }
+    }
+
+    public void updatePassword(int userId, String passwordHash) throws SQLException {
+        try (Connection connection = DatabaseManager.getConnection();
+             PreparedStatement statement = connection.prepareStatement(
+                 "UPDATE users SET password = ? WHERE id = ?")) {
+            statement.setString(1, passwordHash);
+            statement.setInt(2, userId);
+            statement.executeUpdate();
         }
     }
 

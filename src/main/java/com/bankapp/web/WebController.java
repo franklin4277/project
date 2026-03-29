@@ -10,6 +10,7 @@ import com.bankapp.model.User;
 import com.bankapp.service.AccountService;
 import com.bankapp.service.AuthService;
 import com.bankapp.service.LoanService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -21,6 +22,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 
 @Controller
 public class WebController {
@@ -60,11 +62,11 @@ public class WebController {
     @PostMapping("/login")
     public String login(@RequestParam String username,
                         @RequestParam String password,
-                        HttpSession session,
+                        HttpServletRequest request,
                         RedirectAttributes redirectAttributes) {
         try {
             User user = authService.login(username, password);
-            session.setAttribute(SESSION_USER, user);
+            refreshSessionWithUser(request, user);
             redirectAttributes.addFlashAttribute("success", "Login successful.");
             return "redirect:/dashboard";
         } catch (BankException e) {
@@ -78,11 +80,11 @@ public class WebController {
                          @RequestParam String username,
                          @RequestParam String password,
                          @RequestParam String confirmPassword,
-                         HttpSession session,
+                         HttpServletRequest request,
                          RedirectAttributes redirectAttributes) {
         try {
             User user = authService.registerClient(fullName, username, password, confirmPassword);
-            session.setAttribute(SESSION_USER, user);
+            refreshSessionWithUser(request, user);
             redirectAttributes.addFlashAttribute("success", "Account created successfully. Welcome.");
             return "redirect:/dashboard";
         } catch (BankException e) {
@@ -292,7 +294,12 @@ public class WebController {
             User user = requireLoggedIn(session);
             requireRole(user, Role.MANAGER);
 
-            boolean approve = "approve".equalsIgnoreCase(decision);
+            String normalizedDecision = decision == null ? "" : decision.trim().toLowerCase(Locale.ROOT);
+            if (!"approve".equals(normalizedDecision) && !"reject".equals(normalizedDecision)) {
+                throw new BankException("Decision must be either approve or reject.");
+            }
+
+            boolean approve = "approve".equals(normalizedDecision);
             loanService.approveOrRejectLoan(user.getId(), loanId, approve, remark);
             redirectAttributes.addFlashAttribute("success", approve ? "Loan approved." : "Loan rejected.");
             return "redirect:/dashboard";
@@ -402,5 +409,14 @@ public class WebController {
     private User getSessionUser(HttpSession session) {
         Object value = session.getAttribute(SESSION_USER);
         return value instanceof User ? (User) value : null;
+    }
+
+    private void refreshSessionWithUser(HttpServletRequest request, User user) {
+        HttpSession existingSession = request.getSession(false);
+        if (existingSession != null) {
+            existingSession.invalidate();
+        }
+        HttpSession newSession = request.getSession(true);
+        newSession.setAttribute(SESSION_USER, user);
     }
 }

@@ -305,7 +305,9 @@ public class SwingMainFrame extends JFrame {
 
         logoutBtn.addActionListener(e -> {
             currentUser = null;
+            usernameField.setText("");
             passwordField.setText("");
+            clearInteractiveFields();
             sessionLabel.setText("Not logged in");
             applyPermissions();
             showInfo("Logged out.");
@@ -404,6 +406,8 @@ public class SwingMainFrame extends JFrame {
             int loanId = parseInt(pendingLoanIdField.getText(), "Loan ID");
             loanService.approveOrRejectLoan(currentUser.getId(), loanId, true, pendingRemarkField.getText());
             showInfo("Loan approved.");
+            List<Loan> pending = loanService.getPendingLoans();
+            loansOutput.setText(formatLoans("Pending Loans", pending));
         }));
 
         rejectLoanBtn.addActionListener(e -> runAction(() -> {
@@ -411,6 +415,8 @@ public class SwingMainFrame extends JFrame {
             int loanId = parseInt(pendingLoanIdField.getText(), "Loan ID");
             loanService.approveOrRejectLoan(currentUser.getId(), loanId, false, pendingRemarkField.getText());
             showInfo("Loan rejected.");
+            List<Loan> pending = loanService.getPendingLoans();
+            loansOutput.setText(formatLoans("Pending Loans", pending));
         }));
 
         loadLoansBtn.addActionListener(e -> runAction(() -> {
@@ -458,6 +464,9 @@ public class SwingMainFrame extends JFrame {
         boolean isOperator = role == Role.OPERATOR;
         boolean isManager = role == Role.MANAGER;
 
+        loginBtn.setEnabled(!loggedIn);
+        usernameField.setEditable(!loggedIn);
+        passwordField.setEditable(!loggedIn);
         logoutBtn.setEnabled(loggedIn);
 
         openAccountBtn.setEnabled(loggedIn && isOperator);
@@ -484,6 +493,35 @@ public class SwingMainFrame extends JFrame {
         loanClientIdField.setEditable(!isClient);
         accountsClientIdField.setEditable(!isClient);
         loansClientIdField.setEditable(!isClient);
+    }
+
+    private void clearInteractiveFields() {
+        openClientIdField.setText("");
+        depositAccountIdField.setText("");
+        depositAmountField.setText("");
+        withdrawAccountIdField.setText("");
+        withdrawAmountField.setText("");
+        transferFromField.setText("");
+        transferToField.setText("");
+        transferAmountField.setText("");
+        accountsClientIdField.setText("");
+
+        loanClientIdField.setText("");
+        loanAccountIdField.setText("");
+        loanAmountField.setText("");
+        topUpBox.setSelected(false);
+        repayLoanIdField.setText("");
+        repayAccountIdField.setText("");
+        repayAmountField.setText("");
+        pendingLoanIdField.setText("");
+        pendingRemarkField.setText("");
+        loansClientIdField.setText("");
+
+        statementAccountIdField.setText("");
+        statementLoanIdField.setText("");
+        accountsOutput.setText("");
+        loansOutput.setText("");
+        statementOutput.setText("");
     }
 
     private void showAccounts(int clientId) throws BankException {

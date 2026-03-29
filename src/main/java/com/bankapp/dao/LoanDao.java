@@ -79,15 +79,20 @@ public class LoanDao {
     }
 
     public Loan findOpenLoanByClient(int clientId) throws SQLException {
-        try (Connection connection = DatabaseManager.getConnection();
-             PreparedStatement statement = connection.prepareStatement(
-                 """
-                 SELECT * FROM loans
-                 WHERE client_id = ?
-                 AND status IN (?, ?)
-                 ORDER BY id DESC
-                 LIMIT 1
-                 """)) {
+        try (Connection connection = DatabaseManager.getConnection()) {
+            return findOpenLoanByClient(connection, clientId);
+        }
+    }
+
+    public Loan findOpenLoanByClient(Connection connection, int clientId) throws SQLException {
+        try (PreparedStatement statement = connection.prepareStatement(
+            """
+            SELECT * FROM loans
+            WHERE client_id = ?
+            AND status IN (?, ?)
+            ORDER BY id DESC
+            LIMIT 1
+            """)) {
             statement.setInt(1, clientId);
             statement.setString(2, LoanStatus.PENDING.name());
             statement.setString(3, LoanStatus.ACTIVE.name());
