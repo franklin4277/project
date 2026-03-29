@@ -1,0 +1,17 @@
+services:
+  - type: web
+    name: bank-system
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    healthCheckPath: /healthz
+    autoDeploy: true
+    envVars:
+      - key: BANK_DB_URL
+        value: jdbc:sqlite:/app/data/bank.db
+      - key: JAVA_TOOL_OPTIONS
+        value: -XX:+UseContainerSupport -XX:MaxRAMPercentage=75.0
+    disk:
+      name: bank-data
+      mountPath: /app/data
+      sizeGB: 1

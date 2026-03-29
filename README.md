@@ -66,6 +66,22 @@ Notes:
 - SQLite data persists in Docker named volume `bank_data`.
 - Container DB path is `/app/data/bank.db`.
 
+## Deploy On Render
+This repo includes a Render blueprint file: `render.yaml`.
+
+1. In Render, create a new Blueprint service from this repository.
+2. Confirm the service uses:
+   - Docker runtime
+   - Health check path: `/healthz`
+   - Persistent disk mounted at `/app/data`
+   - `BANK_DB_URL=jdbc:sqlite:/app/data/bank.db`
+3. Deploy.
+
+Health endpoint:
+```text
+/healthz
+```
+
 ## Diagrams (PlantUML)
 - `diagrams/use-case-diagram.puml`
 - `diagrams/class-diagram.puml`
