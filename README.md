@@ -48,6 +48,18 @@ A simple website for a banking application using a local database (`bank.db`) wi
    http://localhost:8080/login
    ```
 
+## Run Swing Desktop Frontend
+This project also includes a Java Swing GUI frontend (desktop mode) using the same JDBC/services.
+
+1. Build:
+   ```bash
+   mvn clean compile
+   ```
+2. Launch Swing app:
+   ```bash
+   mvn exec:java -Dexec.mainClass=com.bankapp.swing.SwingLauncher
+   ```
+
 ## Run With Docker (One Command)
 1. Start app + local persistent DB volume:
    ```bash
@@ -101,3 +113,7 @@ plantuml diagrams/*.puml
   - `src/main/resources/templates/dashboard.html`
 - Styling: `src/main/resources/static/styles.css`
 - DB setup: `src/main/java/com/bankapp/config/DatabaseManager.java`
+
+## Main Swing Files
+- Launcher: `src/main/java/com/bankapp/swing/SwingLauncher.java`
+- Desktop UI: `src/main/java/com/bankapp/swing/SwingMainFrame.java`
