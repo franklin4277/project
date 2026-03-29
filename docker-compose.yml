@@ -1,0 +1,16 @@
+﻿services:
+  bank-web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: bank-web
+    ports:
+      - "8080:8080"
+    environment:
+      BANK_DB_URL: jdbc:sqlite:/app/data/bank.db
+    volumes:
+      - bank_data:/app/data
+    restart: unless-stopped
+
+volumes:
+  bank_data:

@@ -1,0 +1,50 @@
+﻿@startuml
+start
+:Client/Operator submits loan request;
+:Validate client and disbursement account;
+
+if (Existing open loan?) then (Yes)
+  if (Top-up selected?) then (No)
+    :Reject request;
+    stop
+  else (Yes)
+    if (Existing loan is ACTIVE?) then (No)
+      :Reject request;
+      stop
+    else (Yes)
+      :Check requested amount > existing balance;
+      if (Valid amount?) then (No)
+        :Reject request;
+        stop
+      else (Yes)
+        :Compute top-up charge = 10% of remaining amount;
+      endif
+    endif
+  endif
+else (No)
+  if (Top-up selected?) then (Yes)
+    :Reject request;
+    stop
+  endif
+endif
+
+:Save loan with status PENDING;
+:Manager reviews pending loan;
+
+if (Manager approves?) then (No)
+  :Set status REJECTED;
+  stop
+else (Yes)
+  if (Is top-up?) then (Yes)
+    :Clear existing active loan;
+    :Close previous loan;
+    :Calculate net disbursement after top-up charge;
+  endif
+  :Set new loan status ACTIVE;
+  :Disburse funds to selected account;
+  :Record loan disbursement transaction;
+  :Loan management continues with repayments;
+endif
+
+stop
+@enduml

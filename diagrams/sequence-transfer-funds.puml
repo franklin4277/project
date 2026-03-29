@@ -1,0 +1,41 @@
+﻿@startuml
+actor Client
+participant "GUI" as UI
+participant "AccountService" as Service
+participant "AccountDao" as AccountDao
+participant "TransactionDao" as TxDao
+database "SQLite DB" as DB
+
+Client -> UI : Enter fromAccount, toAccount, amount
+UI -> Service : transfer(fromAccountId,toAccountId,amount)
+Service -> AccountDao : findById(fromAccountId)
+AccountDao -> DB : SELECT account
+DB --> AccountDao : account row
+AccountDao --> Service : fromAccount
+
+Service -> AccountDao : findById(toAccountId)
+AccountDao -> DB : SELECT account
+DB --> AccountDao : account row
+AccountDao --> Service : toAccount
+
+Service -> Service : validate funds and rules
+
+Service -> AccountDao : updateBalance(fromAccount)
+AccountDao -> DB : UPDATE accounts
+DB --> AccountDao : ok
+
+Service -> AccountDao : updateBalance(toAccount)
+AccountDao -> DB : UPDATE accounts
+DB --> AccountDao : ok
+
+Service -> TxDao : create(TRANSFER_OUT)
+TxDao -> DB : INSERT transaction
+DB --> TxDao : ok
+
+Service -> TxDao : create(TRANSFER_IN)
+TxDao -> DB : INSERT transaction
+DB --> TxDao : ok
+
+Service --> UI : Transfer success
+UI --> Client : Show confirmation
+@enduml

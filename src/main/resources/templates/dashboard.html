@@ -1,0 +1,362 @@
+﻿<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bank Dashboard</title>
+    <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+<main class="page">
+    <header class="panel masthead motion-in">
+        <div>
+            <h1>Premier Ledger Bank Console</h1>
+            <p class="tagline">Manage accounts, loans, and statements from one workflow-first control center.</p>
+            <ul class="quick-rules">
+                <li>ATM cap: 20,000/day</li>
+                <li>MPESA cap: 20,000/day</li>
+                <li>Above 50,000 withdrawal: counter only</li>
+                <li>Top-up charge: 10% on remaining amount</li>
+            </ul>
+        </div>
+
+        <div class="user-metadata">
+            <span>
+                User: <strong th:text="${user.fullName}">User</strong>
+            </span>
+            <span class="role-chip client" th:if="${isClient}">CLIENT</span>
+            <span class="role-chip operator" th:if="${isOperator}">OPERATOR</span>
+            <span class="role-chip manager" th:if="${isManager}">MANAGER</span>
+            <a class="button secondary" href="/logout">Logout</a>
+        </div>
+    </header>
+
+    <div class="alert ok motion-in" th:if="${success}" th:text="${success}"></div>
+    <div class="alert err motion-in" th:if="${error}" th:text="${error}"></div>
+
+    <section class="dashboard-grid">
+        <article class="panel motion-in delay-1">
+            <div class="section-head">
+                <div>
+                    <h2>Accounts</h2>
+                    <p class="section-sub">Open accounts, post transactions, transfer funds, and apply interest.</p>
+                </div>
+            </div>
+
+            <div class="block">
+                <h4>Load Account Portfolio</h4>
+                <form class="form-grid" method="get" action="/dashboard">
+                    <label>Client ID</label>
+                    <input name="accountsClientId" type="number" min="1" th:value="${accountsClientId}" th:readonly="${isClient}">
+                    <div class="form-actions">
+                        <button type="submit">Load Accounts</button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="block" th:if="${isOperator}">
+                <h4>Open Account (Operator)</h4>
+                <form class="form-grid" method="post" action="/accounts/open">
+                    <div class="form-row">
+                        <div>
+                            <label>Client ID</label>
+                            <input name="clientId" type="number" min="1" required>
+                        </div>
+                        <div>
+                            <label>Account Type</label>
+                            <select name="accountType">
+                                <option th:each="t : ${accountTypes}" th:value="${t}" th:text="${t}"></option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit">Create Account</button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="block" th:if="${isClient or isOperator}">
+                <h4>Deposit Funds</h4>
+                <form class="form-grid" method="post" action="/accounts/deposit">
+                    <div class="form-row">
+                        <div>
+                            <label>Account ID</label>
+                            <input name="accountId" type="number" min="1" required>
+                        </div>
+                        <div>
+                            <label>Amount</label>
+                            <input name="amount" type="number" min="0.01" step="0.01" required>
+                        </div>
+                        <div>
+                            <label>Channel</label>
+                            <select name="channel">
+                                <option value="MPESA">MPESA</option>
+                                <option value="COUNTER">COUNTER</option>
+                                <option value="ONLINE">ONLINE</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit">Submit Deposit</button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="block" th:if="${isClient or isOperator}">
+                <h4>Withdraw Funds</h4>
+                <form class="form-grid" method="post" action="/accounts/withdraw">
+                    <div class="form-row">
+                        <div>
+                            <label>Account ID</label>
+                            <input name="accountId" type="number" min="1" required>
+                        </div>
+                        <div>
+                            <label>Amount</label>
+                            <input name="amount" type="number" min="0.01" step="0.01" required>
+                        </div>
+                        <div>
+                            <label>Channel</label>
+                            <select name="channel">
+                                <option th:each="c : ${withdrawalChannels}" th:value="${c}" th:text="${c}"></option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit" class="warning">Submit Withdrawal</button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="block" th:if="${isClient or isOperator}">
+                <h4>Transfer Funds</h4>
+                <form class="form-grid" method="post" action="/accounts/transfer">
+                    <div class="form-row-4">
+                        <div>
+                            <label>From Account</label>
+                            <input name="fromAccountId" type="number" min="1" required>
+                        </div>
+                        <div>
+                            <label>To Account</label>
+                            <input name="toAccountId" type="number" min="1" required>
+                        </div>
+                        <div>
+                            <label>Amount</label>
+                            <input name="amount" type="number" min="0.01" step="0.01" required>
+                        </div>
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit">Transfer Now</button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="block" th:if="${isOperator or isManager}">
+                <h4>Interest Posting</h4>
+                <div class="inline">
+                    <form method="post" action="/accounts/post-savings-interest">
+                        <button type="submit">Post Savings 3%</button>
+                    </form>
+                    <form method="post" action="/accounts/post-fixed-interest">
+                        <button type="submit">Post Fixed 8%</button>
+                    </form>
+                </div>
+            </div>
+
+            <div class="block">
+                <h4>Loaded Accounts</h4>
+                <div class="table-wrap" th:if="${accounts != null and !accounts.isEmpty()}">
+                    <table>
+                        <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Client</th>
+                            <th>Type</th>
+                            <th>Balance</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="a : ${accounts}">
+                            <td th:text="${a.id}">1</td>
+                            <td th:text="${a.clientId}">1</td>
+                            <td th:text="${a.accountType}">SAVINGS</td>
+                            <td th:text="${#numbers.formatDecimal(a.balance, 1, 'COMMA', 2, 'POINT')}">0.00</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="empty-state" th:if="${accounts == null or accounts.isEmpty()}">No accounts loaded.</div>
+            </div>
+        </article>
+
+        <article class="panel motion-in delay-2">
+            <div class="section-head">
+                <div>
+                    <h2>Loans</h2>
+                    <p class="section-sub">Apply, approve, top-up, repay, and monitor outstanding balances.</p>
+                </div>
+            </div>
+
+            <div class="block">
+                <h4>Load Loan Portfolio</h4>
+                <form class="form-grid" method="get" action="/dashboard">
+                    <label>Client ID</label>
+                    <input name="loansClientId" type="number" min="1" th:value="${loansClientId}" th:readonly="${isClient}">
+                    <div class="form-actions">
+                        <button type="submit">Load Loans</button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="block" th:if="${isClient or isOperator}">
+                <h4>Apply Loan</h4>
+                <form class="form-grid" method="post" action="/loans/apply">
+                    <div class="form-row-4">
+                        <div>
+                            <label>Client ID</label>
+                            <input name="clientId" type="number" min="1" required th:value="${isClient ? user.clientId : ''}" th:readonly="${isClient}">
+                        </div>
+                        <div>
+                            <label>Disbursement Account ID</label>
+                            <input name="accountId" type="number" min="1" required>
+                        </div>
+                        <div>
+                            <label>Requested Amount</label>
+                            <input name="requestedAmount" type="number" min="0.01" step="0.01" required>
+                        </div>
+                    </div>
+                    <div class="inline">
+                        <input id="topUp" name="topUp" type="checkbox" value="true" style="width: auto;">
+                        <label for="topUp" style="margin: 0; text-transform: none; font-size: 13px;">This is a top-up loan request</label>
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit">Submit Loan Request</button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="block" th:if="${isClient or isOperator}">
+                <h4>Repay Loan</h4>
+                <form class="form-grid" method="post" action="/loans/repay">
+                    <div class="form-row-4">
+                        <div>
+                            <label>Loan ID</label>
+                            <input name="loanId" type="number" min="1" required>
+                        </div>
+                        <div>
+                            <label>Account ID</label>
+                            <input name="accountId" type="number" min="1" required>
+                        </div>
+                        <div>
+                            <label>Amount</label>
+                            <input name="amount" type="number" min="0.01" step="0.01" required>
+                        </div>
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit" class="warning">Post Repayment</button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="block" th:if="${isManager}">
+                <h4>Pending Loan Approvals</h4>
+                <div class="table-wrap" th:if="${pendingLoans != null and !pendingLoans.isEmpty()}">
+                    <table>
+                        <thead>
+                        <tr>
+                            <th>Loan</th>
+                            <th>Client</th>
+                            <th>Requested</th>
+                            <th>Outstanding</th>
+                            <th>Top-up</th>
+                            <th>Action</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="l : ${pendingLoans}">
+                            <td th:text="${l.id}">1</td>
+                            <td th:text="${l.clientId}">1</td>
+                            <td th:text="${#numbers.formatDecimal(l.requestedAmount, 1, 'COMMA', 2, 'POINT')}">0.00</td>
+                            <td th:text="${#numbers.formatDecimal(l.outstandingBalance, 1, 'COMMA', 2, 'POINT')}">0.00</td>
+                            <td th:text="${l.topUp ? 'YES' : 'NO'}">NO</td>
+                            <td>
+                                <form method="post" action="/loans/action" class="inline">
+                                    <input type="hidden" name="loanId" th:value="${l.id}">
+                                    <input name="remark" class="compact-field" placeholder="Remark">
+                                    <button type="submit" name="decision" value="approve">Approve</button>
+                                    <button type="submit" name="decision" value="reject" class="danger">Reject</button>
+                                </form>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="empty-state" th:if="${pendingLoans == null or pendingLoans.isEmpty()}">No pending loans.</div>
+            </div>
+
+            <div class="block">
+                <h4>Loaded Loans</h4>
+                <div class="table-wrap" th:if="${loans != null and !loans.isEmpty()}">
+                    <table>
+                        <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Client</th>
+                            <th>Status</th>
+                            <th>Requested</th>
+                            <th>Outstanding</th>
+                            <th>Top-up</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="l : ${loans}">
+                            <td th:text="${l.id}">1</td>
+                            <td th:text="${l.clientId}">1</td>
+                            <td th:text="${l.status}">ACTIVE</td>
+                            <td th:text="${#numbers.formatDecimal(l.requestedAmount, 1, 'COMMA', 2, 'POINT')}">0.00</td>
+                            <td th:text="${#numbers.formatDecimal(l.outstandingBalance, 1, 'COMMA', 2, 'POINT')}">0.00</td>
+                            <td th:text="${l.topUp ? 'YES' : 'NO'}">NO</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="empty-state" th:if="${loans == null or loans.isEmpty()}">No loans loaded.</div>
+            </div>
+        </article>
+    </section>
+
+    <section class="panel statement-panel motion-in delay-3">
+        <div class="section-head">
+            <div>
+                <h2>Statements</h2>
+                <p class="section-sub">Generate account or loan statements instantly.</p>
+            </div>
+        </div>
+
+        <div class="statement-grid">
+            <form class="block form-grid" method="post" action="/statements/account">
+                <h4>Account Statement</h4>
+                <label>Account ID</label>
+                <input name="accountId" type="number" min="1" required>
+                <div class="form-actions">
+                    <button type="submit">Generate Account Statement</button>
+                </div>
+            </form>
+
+            <form class="block form-grid" method="post" action="/statements/loan">
+                <h4>Loan Statement</h4>
+                <label>Loan ID</label>
+                <input name="loanId" type="number" min="1" required>
+                <div class="form-actions">
+                    <button type="submit">Generate Loan Statement</button>
+                </div>
+            </form>
+        </div>
+
+        <div class="block" th:if="${statementText}">
+            <h4 th:text="${statementTitle}">Statement</h4>
+            <div class="code" th:text="${statementText}"></div>
+        </div>
+    </section>
+</main>
+</body>
+</html>

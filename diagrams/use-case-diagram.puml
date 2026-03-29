@@ -1,0 +1,67 @@
+﻿@startuml
+left to right direction
+skinparam packageStyle rectangle
+
+actor Client
+actor Manager
+actor Operator
+
+rectangle "Bank Application System" {
+  usecase "Authenticate" as UC_Login
+  usecase "Open Account" as UC_OpenAccount
+  usecase "Deposit Funds" as UC_Deposit
+  usecase "Withdraw Funds" as UC_Withdraw
+  usecase "Transfer Funds" as UC_Transfer
+  usecase "Generate Account Statement" as UC_AccStatement
+
+  usecase "Apply Loan" as UC_ApplyLoan
+  usecase "Apply Top-up Loan" as UC_TopUp
+  usecase "Approve/Reject Loan" as UC_ApproveLoan
+  usecase "Repay Loan" as UC_RepayLoan
+  usecase "Generate Loan Statement" as UC_LoanStatement
+
+  usecase "Post Savings Interest (3% monthly)" as UC_SavingsInterest
+  usecase "Post Fixed Deposit Interest (8% at maturity)" as UC_FixedInterest
+}
+
+Client --> UC_Login
+Client --> UC_Deposit
+Client --> UC_Withdraw
+Client --> UC_Transfer
+Client --> UC_AccStatement
+Client --> UC_ApplyLoan
+Client --> UC_TopUp
+Client --> UC_RepayLoan
+Client --> UC_LoanStatement
+
+Operator --> UC_Login
+Operator --> UC_OpenAccount
+Operator --> UC_Deposit
+Operator --> UC_Withdraw
+Operator --> UC_Transfer
+Operator --> UC_AccStatement
+Operator --> UC_ApplyLoan
+Operator --> UC_RepayLoan
+
+Manager --> UC_Login
+Manager --> UC_ApproveLoan
+Manager --> UC_LoanStatement
+Manager --> UC_SavingsInterest
+Manager --> UC_FixedInterest
+
+UC_TopUp ..> UC_ApplyLoan : <<extend>>
+UC_ApproveLoan ..> UC_ApplyLoan : <<include>>
+
+note bottom of UC_Withdraw
+- Amount > 50,000: counter only
+- ATM daily cap: 20,000
+- MPESA daily cap: 20,000
+- Common withdrawal charges apply
+end note
+
+note right of UC_TopUp
+Top-up clears active loan first.
+Charge = 10% of remaining amount
+after clearing existing loan.
+end note
+@enduml

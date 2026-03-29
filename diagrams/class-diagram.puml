@@ -1,0 +1,119 @@
+﻿@startuml
+skinparam classAttributeIconSize 0
+
+class User {
+  -id: int
+  -username: String
+  -password: String
+  -fullName: String
+  -role: Role
+}
+
+class Client {
+  -clientId: int
+}
+
+class Manager
+class Operator
+
+User <|-- Client
+User <|-- Manager
+User <|-- Operator
+
+class Account {
+  <<abstract>>
+  -id: int
+  -clientId: int
+  -accountType: AccountType
+  -balance: double
+  +deposit(amount: double)
+  +withdraw(amount: double)
+  +calculateInterest(): double
+}
+
+class SavingsAccount {
+  +calculateInterest(): double
+}
+
+class CurrentAccount {
+  +calculateInterest(): double
+}
+
+class FixedDepositAccount {
+  -maturityDate: LocalDate
+  +isMatured(today: LocalDate): boolean
+  +calculateInterest(): double
+}
+
+Account <|-- SavingsAccount
+Account <|-- CurrentAccount
+Account <|-- FixedDepositAccount
+
+class Loan {
+  -id: int
+  -clientId: int
+  -accountId: int
+  -requestedAmount: double
+  -outstandingBalance: double
+  -status: LoanStatus
+  -isTopUp: boolean
+  -topUpCharge: Double
+  -previousLoanId: Integer
+}
+
+class Transaction {
+  -id: int
+  -accountId: int
+  -clientId: int
+  -transactionType: TransactionType
+  -amount: double
+  -channel: String
+  -description: String
+}
+
+class LoanPayment {
+  -id: int
+  -loanId: int
+  -accountId: int
+  -amount: double
+}
+
+class AccountService {
+  +openAccount(clientId, accountType)
+  +deposit(accountId, amount, channel)
+  +withdraw(accountId, amount, channel)
+  +transfer(fromAccountId, toAccountId, amount)
+  +processMonthlySavingsInterest()
+  +processFixedDepositMaturityInterest()
+  +generateAccountStatement(accountId)
+}
+
+class LoanService {
+  +applyLoan(clientId, accountId, requestedAmount, topUp)
+  +approveOrRejectLoan(managerId, loanId, approve, remark)
+  +repayLoan(loanId, accountId, amount)
+  +generateLoanStatement(loanId)
+}
+
+class AuthService {
+  +login(username, password)
+}
+
+class AccountDao
+class LoanDao
+class TransactionDao
+class UserDao
+
+Client "1" -- "0..3" Account
+Client "1" -- "0..*" Loan
+Account "1" -- "0..*" Transaction
+Loan "1" -- "0..*" LoanPayment
+
+AccountService ..> AccountDao
+AccountService ..> TransactionDao
+LoanService ..> LoanDao
+LoanService ..> AccountDao
+LoanService ..> TransactionDao
+AuthService ..> UserDao
+
+@enduml

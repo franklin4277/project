@@ -1,0 +1,60 @@
+﻿<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bank Login</title>
+    <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+<main class="page">
+    <section class="login-shell motion-in">
+        <article class="login-brand">
+            <h1>Premier Ledger Bank</h1>
+            <p>One secure portal for clients, operators, and managers to run accounts, loans, and statements with local persistence.</p>
+
+            <ul class="cred-list">
+                <li class="cred-item">
+                    <span>alice / client123</span>
+                    <span class="role-chip client">CLIENT</span>
+                </li>
+                <li class="cred-item">
+                    <span>bob / client123</span>
+                    <span class="role-chip client">CLIENT</span>
+                </li>
+                <li class="cred-item">
+                    <span>operator / operator123</span>
+                    <span class="role-chip operator">OPERATOR</span>
+                </li>
+                <li class="cred-item">
+                    <span>manager / manager123</span>
+                    <span class="role-chip manager">MANAGER</span>
+                </li>
+            </ul>
+        </article>
+
+        <article class="card login-panel">
+            <h2 class="login-title">Sign In</h2>
+            <p class="login-sub">Enter your role credentials to access the banking dashboard.</p>
+
+            <div class="alert ok" th:if="${success}" th:text="${success}"></div>
+            <div class="alert err" th:if="${error}" th:text="${error}"></div>
+
+            <form class="form-grid" method="post" action="/login">
+                <label for="username">Username</label>
+                <input id="username" name="username" required autocomplete="username">
+
+                <label for="password">Password</label>
+                <input id="password" name="password" type="password" required autocomplete="current-password">
+
+                <button type="submit">Enter Dashboard</button>
+            </form>
+
+            <div class="helper-note">
+                The system enforces transaction caps, loan approval flow, and top-up loan rules exactly as configured.
+            </div>
+        </article>
+    </section>
+</main>
+</body>
+</html>
