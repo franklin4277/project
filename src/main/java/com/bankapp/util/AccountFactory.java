@@ -1,4 +1,4 @@
-﻿package com.bankapp.util;
+package com.bankapp.util;
 
 import com.bankapp.enums.AccountType;
 import com.bankapp.model.Account;

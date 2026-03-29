@@ -1,4 +1,4 @@
-﻿package com.bankapp.service;
+package com.bankapp.service;
 
 import com.bankapp.config.DatabaseManager;
 import com.bankapp.dao.AccountDao;

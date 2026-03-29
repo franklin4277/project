@@ -1,4 +1,4 @@
-﻿package com.bankapp.dao;
+package com.bankapp.dao;
 
 import com.bankapp.config.DatabaseManager;
 import com.bankapp.enums.Role;

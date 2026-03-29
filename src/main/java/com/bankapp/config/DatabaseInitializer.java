@@ -1,4 +1,4 @@
-﻿package com.bankapp.config;
+package com.bankapp.config;
 
 import jakarta.annotation.PostConstruct;
 import org.springframework.stereotype.Component;

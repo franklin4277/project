@@ -1,4 +1,4 @@
-﻿package com.bankapp.exception;
+package com.bankapp.exception;
 
 public class BankException extends Exception {
     public BankException(String message) {

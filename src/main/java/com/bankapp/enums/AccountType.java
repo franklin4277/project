@@ -1,4 +1,4 @@
-﻿package com.bankapp.enums;
+package com.bankapp.enums;
 
 public enum AccountType {
     SAVINGS,

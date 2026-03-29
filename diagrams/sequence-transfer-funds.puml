@@ -1,4 +1,4 @@
-﻿@startuml
+@startuml
 actor Client
 participant "GUI" as UI
 participant "AccountService" as Service

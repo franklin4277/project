@@ -1,4 +1,4 @@
-﻿@startuml
+@startuml
 start
 :Client/Operator submits loan request;
 :Validate client and disbursement account;

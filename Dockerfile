@@ -1,4 +1,4 @@
-﻿# Multi-stage build for a smaller runtime image
+# Multi-stage build for a smaller runtime image
 FROM maven:3.9.9-eclipse-temurin-17 AS build
 WORKDIR /workspace
 

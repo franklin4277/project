@@ -1,4 +1,4 @@
-﻿package com.bankapp.util;
+package com.bankapp.util;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;

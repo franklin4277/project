@@ -1,4 +1,4 @@
-﻿package com.bankapp.config;
+package com.bankapp.config;
 
 import com.bankapp.dao.AccountDao;
 import com.bankapp.dao.LoanDao;

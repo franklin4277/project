@@ -1,4 +1,4 @@
-﻿package com.bankapp.util;
+package com.bankapp.util;
 
 public final class BankConstants {
     private BankConstants() {

@@ -1,4 +1,4 @@
-﻿package com.bankapp.service;
+package com.bankapp.service;
 
 import com.bankapp.dao.UserDao;
 import com.bankapp.exception.BankException;

@@ -1,4 +1,4 @@
-﻿services:
+services:
   bank-web:
     build:
       context: .

@@ -1,4 +1,4 @@
-﻿package com.bankapp.web;
+package com.bankapp.web;
 
 import com.bankapp.enums.AccountType;
 import com.bankapp.enums.Role;
