@@ -8,6 +8,7 @@
   --ink-700: #3f564c;
   --line: #d3e2d9;
   --paper: #ffffff;
+  --paper-soft: #f8fcf9;
   --danger: #b42318;
   --danger-bg: #fdecea;
   --ok: #14532d;
@@ -339,6 +340,20 @@ th {
   border-color: #0f8c56;
 }
 
+body.role-client .masthead {
+  background: linear-gradient(140deg, #0b7a4b 0%, #13a462 100%);
+}
+
+body.role-operator .masthead {
+  background: linear-gradient(140deg, #056a61 0%, #0d8d82 100%);
+  border-color: #0a7d74;
+}
+
+body.role-manager .masthead {
+  background: linear-gradient(140deg, #8d4e1f 0%, #b8682e 100%);
+  border-color: #9f5a25;
+}
+
 .masthead h1,
 .masthead .tagline,
 .masthead span {
@@ -360,6 +375,16 @@ th {
   font-size: 12px;
   color: #0c4f30;
   background: #dff7ea;
+}
+
+body.role-operator .quick-rules li {
+  color: #0a4f49;
+  background: #dbf7f5;
+}
+
+body.role-manager .quick-rules li {
+  color: #6d3f16;
+  background: #ffe7d1;
 }
 
 .user-metadata {
