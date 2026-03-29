@@ -10,35 +10,35 @@
 <main class="page">
     <section class="login-shell motion-in">
         <article class="login-brand">
-            <h1>Open Your Client Profile</h1>
-            <p>Create your own client login and access banking services online.</p>
+            <h1>Create Your Client Profile</h1>
+            <p>Open a client login to view balances, apply for loans, repay, and generate statements online.</p>
 
             <ul class="rule-list">
-                <li>Signup creates a CLIENT account only.</li>
-                <li>Username: 3-30 characters (`A-Z`, `a-z`, `0-9`, `.`, `_`, `-`).</li>
-                <li>Password minimum length: 6 characters.</li>
+                <li>Sign up creates a <strong>client</strong> user only.</li>
+                <li>Username must be unique and 3-30 characters.</li>
+                <li>Password must be at least 6 characters.</li>
             </ul>
         </article>
 
         <article class="card login-panel">
-            <h2 class="login-title">Sign Up</h2>
-            <p class="login-sub">Fill in your details to create a new client account.</p>
+            <h2 class="login-title">Client Signup</h2>
+            <p class="login-sub">Tell us who you are and choose your login credentials.</p>
 
             <div class="alert ok" th:if="${success}" th:text="${success}"></div>
             <div class="alert err" th:if="${error}" th:text="${error}"></div>
 
             <form class="form-grid" method="post" action="/signup">
                 <label for="fullName">Full Name</label>
-                <input id="fullName" name="fullName" required autocomplete="name" th:value="${signupFullName}">
+                <input id="fullName" name="fullName" required autocomplete="name" th:value="${signupFullName}" placeholder="e.g. Jane Wanjiku">
 
                 <label for="username">Username</label>
-                <input id="username" name="username" required autocomplete="username" th:value="${signupUsername}">
+                <input id="username" name="username" required autocomplete="username" th:value="${signupUsername}" placeholder="e.g. jane.w">
 
                 <label for="password">Password</label>
-                <input id="password" name="password" type="password" required autocomplete="new-password">
+                <input id="password" name="password" type="password" required autocomplete="new-password" placeholder="Minimum 6 characters">
 
                 <label for="confirmPassword">Confirm Password</label>
-                <input id="confirmPassword" name="confirmPassword" type="password" required autocomplete="new-password">
+                <input id="confirmPassword" name="confirmPassword" type="password" required autocomplete="new-password" placeholder="Repeat password">
 
                 <button type="submit">Create Account</button>
             </form>
@@ -48,6 +48,8 @@
             </div>
         </article>
     </section>
+
+    <p class="page-foot">Your profile is saved to the local bank database once registration succeeds.</p>
 </main>
 </body>
 </html>

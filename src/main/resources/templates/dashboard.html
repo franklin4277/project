@@ -10,44 +10,61 @@
 <main class="page">
     <header class="panel masthead motion-in">
         <div>
-            <h1>Premier Ledger Bank Console</h1>
-            <p class="tagline">Manage accounts, loans, and statements from one workflow-first control center.</p>
+            <h1>Premier Ledger Banking Desk</h1>
+            <p class="tagline">A practical daily console for deposits, withdrawals, transfers, loan workflows, and statement generation.</p>
             <ul class="quick-rules">
-                <li>ATM cap: 20,000/day</li>
-                <li>MPESA cap: 20,000/day</li>
-                <li>Above 50,000 withdrawal: counter only</li>
-                <li>Top-up charge: 10% on remaining amount</li>
+                <li>ATM limit: 20,000/day</li>
+                <li>MPESA limit: 20,000/day</li>
+                <li>Above 50,000: counter only</li>
+                <li>Top-up charge: 10%</li>
             </ul>
         </div>
 
         <div class="user-metadata">
-            <span>
-                User: <strong th:text="${user.fullName}">User</strong>
-            </span>
-            <span class="role-chip client" th:if="${isClient}">CLIENT</span>
-            <span class="role-chip operator" th:if="${isOperator}">OPERATOR</span>
-            <span class="role-chip manager" th:if="${isManager}">MANAGER</span>
+            <span>Signed in as <strong th:text="${user.fullName}">User</strong></span>
+            <span class="role-chip client" th:if="${isClient}">Client</span>
+            <span class="role-chip operator" th:if="${isOperator}">Operator</span>
+            <span class="role-chip manager" th:if="${isManager}">Manager</span>
             <a class="button secondary" href="/logout">Logout</a>
         </div>
     </header>
+
+    <div class="intro-cards motion-in delay-1">
+        <article class="intro-card">
+            <h4>Daily Process</h4>
+            <p>Start by loading a client portfolio, perform transactions, then confirm results with statements.</p>
+        </article>
+        <article class="intro-card">
+            <h4 th:if="${isClient}">Your Access</h4>
+            <h4 th:if="${isOperator}">Operator Access</h4>
+            <h4 th:if="${isManager}">Manager Access</h4>
+            <p th:if="${isClient}">You can operate your own accounts, apply and repay loans, and view your statements.</p>
+            <p th:if="${isOperator}">You can assist customers on accounts and transactions plus post interest cycles.</p>
+            <p th:if="${isManager}">You can approve or reject pending loans and review operational activity.</p>
+        </article>
+        <article class="intro-card">
+            <h4>Safety Reminder</h4>
+            <p>This portal enforces withdrawal caps, single-open-loan rules, and top-up logic automatically.</p>
+        </article>
+    </div>
 
     <div class="alert ok motion-in" th:if="${success}" th:text="${success}"></div>
     <div class="alert err motion-in" th:if="${error}" th:text="${error}"></div>
 
     <section class="dashboard-grid">
-        <article class="panel motion-in delay-1">
+        <article class="panel motion-in delay-2">
             <div class="section-head">
                 <div>
                     <h2>Accounts</h2>
-                    <p class="section-sub">Open accounts, post transactions, transfer funds, and apply interest.</p>
+                    <p class="section-sub">Open account types, post money movement, and apply interest credits.</p>
                 </div>
             </div>
 
             <div class="block">
-                <h4>Load Account Portfolio</h4>
+                <h4>Load Client Accounts</h4>
                 <form class="form-grid" method="get" action="/dashboard">
                     <label>Client ID</label>
-                    <input name="accountsClientId" type="number" min="1" th:value="${accountsClientId}" th:readonly="${isClient}">
+                    <input name="accountsClientId" type="number" min="1" th:value="${accountsClientId}" th:readonly="${isClient}" placeholder="Client ID">
                     <div class="form-actions">
                         <button type="submit">Load Accounts</button>
                     </div>
@@ -60,7 +77,7 @@
                     <div class="form-row">
                         <div>
                             <label>Client ID</label>
-                            <input name="clientId" type="number" min="1" required>
+                            <input name="clientId" type="number" min="1" required placeholder="Client ID">
                         </div>
                         <div>
                             <label>Account Type</label>
@@ -81,11 +98,11 @@
                     <div class="form-row">
                         <div>
                             <label>Account ID</label>
-                            <input name="accountId" type="number" min="1" required>
+                            <input name="accountId" type="number" min="1" required placeholder="Account ID">
                         </div>
                         <div>
                             <label>Amount</label>
-                            <input name="amount" type="number" min="0.01" step="0.01" required>
+                            <input name="amount" type="number" min="0.01" step="0.01" required placeholder="0.00">
                         </div>
                         <div>
                             <label>Channel</label>
@@ -108,11 +125,11 @@
                     <div class="form-row">
                         <div>
                             <label>Account ID</label>
-                            <input name="accountId" type="number" min="1" required>
+                            <input name="accountId" type="number" min="1" required placeholder="Account ID">
                         </div>
                         <div>
                             <label>Amount</label>
-                            <input name="amount" type="number" min="0.01" step="0.01" required>
+                            <input name="amount" type="number" min="0.01" step="0.01" required placeholder="0.00">
                         </div>
                         <div>
                             <label>Channel</label>
@@ -133,15 +150,15 @@
                     <div class="form-row-4">
                         <div>
                             <label>From Account</label>
-                            <input name="fromAccountId" type="number" min="1" required>
+                            <input name="fromAccountId" type="number" min="1" required placeholder="Source account">
                         </div>
                         <div>
                             <label>To Account</label>
-                            <input name="toAccountId" type="number" min="1" required>
+                            <input name="toAccountId" type="number" min="1" required placeholder="Destination account">
                         </div>
                         <div>
                             <label>Amount</label>
-                            <input name="amount" type="number" min="0.01" step="0.01" required>
+                            <input name="amount" type="number" min="0.01" step="0.01" required placeholder="0.00">
                         </div>
                     </div>
                     <div class="form-actions">
@@ -163,12 +180,12 @@
             </div>
 
             <div class="block">
-                <h4>Loaded Accounts</h4>
+                <h4>Account Portfolio</h4>
                 <div class="table-wrap" th:if="${accounts != null and !accounts.isEmpty()}">
                     <table>
                         <thead>
                         <tr>
-                            <th>ID</th>
+                            <th>Account ID</th>
                             <th>Client</th>
                             <th>Type</th>
                             <th>Balance</th>
@@ -184,23 +201,23 @@
                         </tbody>
                     </table>
                 </div>
-                <div class="empty-state" th:if="${accounts == null or accounts.isEmpty()}">No accounts loaded.</div>
+                <div class="empty-state" th:if="${accounts == null or accounts.isEmpty()}">No accounts loaded yet. Start by entering a client ID above.</div>
             </div>
         </article>
 
-        <article class="panel motion-in delay-2">
+        <article class="panel motion-in delay-3">
             <div class="section-head">
                 <div>
                     <h2>Loans</h2>
-                    <p class="section-sub">Apply, approve, top-up, repay, and monitor outstanding balances.</p>
+                    <p class="section-sub">Submit, review, approve, repay, and monitor loan lifecycle states.</p>
                 </div>
             </div>
 
             <div class="block">
-                <h4>Load Loan Portfolio</h4>
+                <h4>Load Client Loans</h4>
                 <form class="form-grid" method="get" action="/dashboard">
                     <label>Client ID</label>
-                    <input name="loansClientId" type="number" min="1" th:value="${loansClientId}" th:readonly="${isClient}">
+                    <input name="loansClientId" type="number" min="1" th:value="${loansClientId}" th:readonly="${isClient}" placeholder="Client ID">
                     <div class="form-actions">
                         <button type="submit">Load Loans</button>
                     </div>
@@ -208,25 +225,25 @@
             </div>
 
             <div class="block" th:if="${isClient or isOperator}">
-                <h4>Apply Loan</h4>
+                <h4>Apply for Loan</h4>
                 <form class="form-grid" method="post" action="/loans/apply">
                     <div class="form-row-4">
                         <div>
                             <label>Client ID</label>
-                            <input name="clientId" type="number" min="1" required th:value="${isClient ? user.clientId : ''}" th:readonly="${isClient}">
+                            <input name="clientId" type="number" min="1" required th:value="${isClient ? user.clientId : ''}" th:readonly="${isClient}" placeholder="Client ID">
                         </div>
                         <div>
-                            <label>Disbursement Account ID</label>
-                            <input name="accountId" type="number" min="1" required>
+                            <label>Disbursement Account</label>
+                            <input name="accountId" type="number" min="1" required placeholder="Account ID">
                         </div>
                         <div>
                             <label>Requested Amount</label>
-                            <input name="requestedAmount" type="number" min="0.01" step="0.01" required>
+                            <input name="requestedAmount" type="number" min="0.01" step="0.01" required placeholder="0.00">
                         </div>
                     </div>
                     <div class="inline">
                         <input id="topUp" name="topUp" type="checkbox" value="true" style="width: auto;">
-                        <label for="topUp" style="margin: 0; text-transform: none; font-size: 13px;">This is a top-up loan request</label>
+                        <label for="topUp" style="margin: 0;">This is a top-up request</label>
                     </div>
                     <div class="form-actions">
                         <button type="submit">Submit Loan Request</button>
@@ -240,15 +257,15 @@
                     <div class="form-row-4">
                         <div>
                             <label>Loan ID</label>
-                            <input name="loanId" type="number" min="1" required>
+                            <input name="loanId" type="number" min="1" required placeholder="Loan ID">
                         </div>
                         <div>
                             <label>Account ID</label>
-                            <input name="accountId" type="number" min="1" required>
+                            <input name="accountId" type="number" min="1" required placeholder="Account ID">
                         </div>
                         <div>
                             <label>Amount</label>
-                            <input name="amount" type="number" min="0.01" step="0.01" required>
+                            <input name="amount" type="number" min="0.01" step="0.01" required placeholder="0.00">
                         </div>
                     </div>
                     <div class="form-actions">
@@ -258,12 +275,12 @@
             </div>
 
             <div class="block" th:if="${isManager}">
-                <h4>Pending Loan Approvals</h4>
+                <h4>Pending Approvals</h4>
                 <div class="table-wrap" th:if="${pendingLoans != null and !pendingLoans.isEmpty()}">
                     <table>
                         <thead>
                         <tr>
-                            <th>Loan</th>
+                            <th>Loan ID</th>
                             <th>Client</th>
                             <th>Requested</th>
                             <th>Outstanding</th>
@@ -290,16 +307,16 @@
                         </tbody>
                     </table>
                 </div>
-                <div class="empty-state" th:if="${pendingLoans == null or pendingLoans.isEmpty()}">No pending loans.</div>
+                <div class="empty-state" th:if="${pendingLoans == null or pendingLoans.isEmpty()}">No pending loans right now.</div>
             </div>
 
             <div class="block">
-                <h4>Loaded Loans</h4>
+                <h4>Loan Portfolio</h4>
                 <div class="table-wrap" th:if="${loans != null and !loans.isEmpty()}">
                     <table>
                         <thead>
                         <tr>
-                            <th>ID</th>
+                            <th>Loan ID</th>
                             <th>Client</th>
                             <th>Status</th>
                             <th>Requested</th>
@@ -319,16 +336,16 @@
                         </tbody>
                     </table>
                 </div>
-                <div class="empty-state" th:if="${loans == null or loans.isEmpty()}">No loans loaded.</div>
+                <div class="empty-state" th:if="${loans == null or loans.isEmpty()}">No loans loaded yet. Enter a client ID above to begin.</div>
             </div>
         </article>
     </section>
 
-    <section class="panel statement-panel motion-in delay-3">
+    <section class="panel statement-panel motion-in">
         <div class="section-head">
             <div>
                 <h2>Statements</h2>
-                <p class="section-sub">Generate account or loan statements instantly.</p>
+                <p class="section-sub">Generate account and loan statements for quick review or record keeping.</p>
             </div>
         </div>
 
@@ -336,7 +353,7 @@
             <form class="block form-grid" method="post" action="/statements/account">
                 <h4>Account Statement</h4>
                 <label>Account ID</label>
-                <input name="accountId" type="number" min="1" required>
+                <input name="accountId" type="number" min="1" required placeholder="Account ID">
                 <div class="form-actions">
                     <button type="submit">Generate Account Statement</button>
                 </div>
@@ -345,7 +362,7 @@
             <form class="block form-grid" method="post" action="/statements/loan">
                 <h4>Loan Statement</h4>
                 <label>Loan ID</label>
-                <input name="loanId" type="number" min="1" required>
+                <input name="loanId" type="number" min="1" required placeholder="Loan ID">
                 <div class="form-actions">
                     <button type="submit">Generate Loan Statement</button>
                 </div>
@@ -357,6 +374,8 @@
             <div class="code" th:text="${statementText}"></div>
         </div>
     </section>
+
+    <p class="page-foot">Premier Ledger Bank ? Built for practical daily operations</p>
 </main>
 </body>
 </html>

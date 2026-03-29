@@ -11,54 +11,56 @@
     <section class="login-shell motion-in">
         <article class="login-brand">
             <h1>Premier Ledger Bank</h1>
-            <p>One secure portal for clients, operators, and managers to run accounts, loans, and statements with local persistence.</p>
+            <p>Built for everyday banking teams and customers who want a clean, practical online workspace.</p>
 
             <ul class="cred-list">
                 <li class="cred-item">
                     <span>alice / client123</span>
-                    <span class="role-chip client">CLIENT</span>
+                    <span class="role-chip client">Client</span>
                 </li>
                 <li class="cred-item">
                     <span>bob / client123</span>
-                    <span class="role-chip client">CLIENT</span>
+                    <span class="role-chip client">Client</span>
                 </li>
                 <li class="cred-item">
                     <span>operator / operator123</span>
-                    <span class="role-chip operator">OPERATOR</span>
+                    <span class="role-chip operator">Operator</span>
                 </li>
                 <li class="cred-item">
                     <span>manager / manager123</span>
-                    <span class="role-chip manager">MANAGER</span>
+                    <span class="role-chip manager">Manager</span>
                 </li>
             </ul>
         </article>
 
         <article class="card login-panel">
-            <h2 class="login-title">Sign In</h2>
-            <p class="login-sub">Enter your role credentials to access the banking dashboard.</p>
+            <h2 class="login-title">Welcome Back</h2>
+            <p class="login-sub">Sign in to continue. Your access and actions are tailored to your role.</p>
 
             <div class="alert ok" th:if="${success}" th:text="${success}"></div>
             <div class="alert err" th:if="${error}" th:text="${error}"></div>
 
             <form class="form-grid" method="post" action="/login">
                 <label for="username">Username</label>
-                <input id="username" name="username" required autocomplete="username">
+                <input id="username" name="username" required autocomplete="username" placeholder="e.g. alice">
 
                 <label for="password">Password</label>
-                <input id="password" name="password" type="password" required autocomplete="current-password">
+                <input id="password" name="password" type="password" required autocomplete="current-password" placeholder="Enter password">
 
                 <button type="submit">Enter Dashboard</button>
             </form>
 
             <div class="form-actions">
-                <a class="button secondary" href="/signup">Create New Client Account</a>
+                <a class="button secondary" href="/signup">New here? Create client account</a>
             </div>
 
             <div class="helper-note">
-                The system enforces transaction caps, loan approval flow, and top-up loan rules exactly as configured.
+                Demo credentials are shown on the left. In production, use strong passwords and restricted user creation.
             </div>
         </article>
     </section>
+
+    <p class="page-foot">Premier Ledger Bank ? Secure internal demo portal</p>
 </main>
 </body>
 </html>
